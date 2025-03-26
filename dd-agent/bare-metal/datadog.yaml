@@ -3,6 +3,7 @@ apiVersion: datadoghq.com/v2alpha1
 kind: DatadogAgent
 metadata:
   name: datadog
+  namespace: datadog
 spec:
   global:
     clusterName: skinner-lab  
@@ -30,7 +31,7 @@ spec:
     tcpQueueLength:
       enabled: true
     ebpfCheck:
-      enabled: false
+      enabled: true
     apm:
       enabled: true
       instrumentation:
@@ -46,7 +47,7 @@ spec:
     npm:
       enabled: true
     usm:
-      enabled: false
+      enabled: true
     dogstatsd:
       unixDomainSocketConfig:
         enabled: true
@@ -79,4 +80,14 @@ spec:
         - name: DD_HOSTNAME
           valueFrom:
             fieldRef:
-              fieldPath: spec.nodeName 
+              fieldPath: spec.nodeName
+      containers:
+        agent:
+          securityContext:
+            privileged: true
+        system-probe:
+          securityContext:
+            privileged: true
+        security-agent:
+          securityContext:
+            privileged: true 
