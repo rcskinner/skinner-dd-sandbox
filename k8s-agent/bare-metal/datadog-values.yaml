@@ -1,0 +1,23 @@
+# Helm Chart Values
+datadog:
+  apiKeyExistingSecret: "datadog-secret"
+  site: "us1.datadoghq.com"
+  clusterName: gke-test-cluster
+  logs:
+    enabled: true
+    containerCollectAll: true
+  apm:
+    instrumentation:
+      enabled: true
+      libVersions:
+        java: "1"
+        dotnet: "3"
+        python: "2"
+        js: "5"
+        php: "1"
+spec:
+  override:
+    nodeAgent:
+      env:
+        - name: DD_HOSTNAME
+          value: ryans-laptop
