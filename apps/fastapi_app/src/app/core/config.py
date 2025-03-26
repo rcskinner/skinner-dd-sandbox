@@ -2,14 +2,15 @@ from pydantic_settings import BaseSettings
 from typing import Optional
 
 class Settings(BaseSettings):
-    API_V1_STR: str = "/api/v1"
     PROJECT_NAME: str = "FastAPI Application"
+    API_V1_STR: str = "/api/v1"
     
-    # Add your configuration variables here
-    DATABASE_URL: Optional[str] = None
+    # Redis settings
+    REDIS_HOST: str = "redis"
+    REDIS_PORT: int = 6379
     
     class Config:
-        case_sensitive = True
         env_file = ".env"
+        case_sensitive = True
 
 settings = Settings() 

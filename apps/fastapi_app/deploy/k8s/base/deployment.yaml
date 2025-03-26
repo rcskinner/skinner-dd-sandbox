@@ -30,6 +30,15 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
+          env:
+            - name: REDIS_HOST
+              value: "redis.redis.svc.cluster.local"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: DD_TRACE_ANALYTICS_ENABLED
+              value: "true"
+            - name: DD_TRACE_IGNORE_RESOURCES
+              value: "GET /health"
           envFrom:
             - configMapRef:
                 name: fastapi-config
@@ -38,4 +47,17 @@ spec:
               path: /health
               port: 8000
             initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            failureThreshold: 30
             periodSeconds: 10 
