@@ -6,4 +6,6 @@ metadata:
     app: fastapi-app
 data:
   API_V1_STR: "/api/v1"
-  PROJECT_NAME: "FastAPI Application" 
+  PROJECT_NAME: "FastAPI Application"
+  DD_ENV: "dev"
+  DD_SERVICE: "fastapi-app" 
