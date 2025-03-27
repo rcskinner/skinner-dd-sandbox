@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fastapi-app
+  namespace: pyapp
   labels:
     app: fastapi-app
 spec:
@@ -39,25 +40,8 @@ spec:
               value: "true"
             - name: DD_TRACE_IGNORE_RESOURCES
               value: "GET /health"
+            - name: DD_LOG_INJECTION
+              value: "true"
           envFrom:
             - configMapRef:
                 name: fastapi-config
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: 8000
-            initialDelaySeconds: 10
-            periodSeconds: 5
-            failureThreshold: 3
-          startupProbe:
-            httpGet:
-              path: /health
-              port: 8000
-            failureThreshold: 30
-            periodSeconds: 10 
