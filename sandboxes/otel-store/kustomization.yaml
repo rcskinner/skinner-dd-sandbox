@@ -23,6 +23,21 @@ patches:
         value:
           name: DD_ENV
           value: "otel-store"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: DD_LOGS_INJECTION
+          value: "true"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: DD_PROFILING_ENABLED
+          value: "true"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: DD_RUNTIME_METRICS_ENABLED
+          value: "true"
 
     target:
       kind: Deployment
