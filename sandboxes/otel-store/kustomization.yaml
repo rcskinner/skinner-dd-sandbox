@@ -5,65 +5,43 @@ namespace: otel-store
 
 resources:
   - services/frontend/deploy
-  - services/inventory-service/deploy
+  - services/inventory-service-java/deploy
 
 commonLabels:
   app.kubernetes.io/part-of: otel-store
 
 patches:
   - patch: |-
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: frontend
-      spec:
-        template:
-          spec:
-            containers:
-              - name: frontend
-                env:
-                  - name: DD_ENV
-                    value: "otel-store"
-                  - name: DD_LOGS_INJECTION
-                    value: "true"
-                  - name: DD_PROFILING_ENABLED
-                    value: "true"
-                  - name: DD_RUNTIME_METRICS_ENABLED
-                    value: "true"
-                  - name: DD_LOGS_ENABLED
-                    value: "true"
-                  - name: DD_TRACE_ANALYTICS_ENABLED
-                    value: "true"
-                  - name: DD_APM_ENABLED
-                    value: "true"
+      - op: add
+        path: /spec/template/metadata/labels/admission.datadoghq.com~1enabled
+        value: "true"
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value: []
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: DD_ENV
+          value: "otel-store"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: DD_LOGS_INJECTION
+          value: "true"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: DD_PROFILING_ENABLED
+          value: "true"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: DD_RUNTIME_METRICS_ENABLED
+          value: "true"
+
     target:
       kind: Deployment
       name: frontend
-  - patch: |-
-      apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: inventory-service
-      spec:
-        template:
-          spec:
-            containers:
-              - name: inventory-service
-                env:
-                  - name: DD_ENV
-                    value: "otel-store"
-                  - name: DD_LOGS_INJECTION
-                    value: "true"
-                  - name: DD_PROFILING_ENABLED
-                    value: "true"
-                  - name: DD_RUNTIME_METRICS_ENABLED
-                    value: "true"
-                  - name: DD_LOGS_ENABLED
-                    value: "true"
-                  - name: DD_TRACE_ANALYTICS_ENABLED
-                    value: "true"
-                  - name: DD_APM_ENABLED
-                    value: "true"
-    target:
-      kind: Deployment
-      name: inventory-service 
+      namespace: otel-store
+      version: v1
+      group: apps
