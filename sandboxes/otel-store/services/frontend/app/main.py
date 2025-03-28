@@ -34,19 +34,19 @@ async def create_order(request: Request):
         "quantity": int(form_data.get("quantity", 1))
     }
     
-    # Call order service (OpenTelemetry)
+    # Call inventory service (OpenTelemetry)
     async with httpx.AsyncClient() as client:
         response = await client.post(
-            "http://order-service:8080/orders",
+            "http://inventory-service.otel-store.svc.cluster.local:8080/inventory",
             json=order_data
         )
-        order_result = response.json()
+        inventory_result = response.json()
     
     return templates.TemplateResponse(
         "order_result.html",
         {
             "request": request,
-            "order": order_result,
+            "order": inventory_result,
             "title": "Order Result"
         }
     ) 
