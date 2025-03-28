@@ -1,20 +1,14 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from app.core.config import settings
+from app.core.config import settings, setup_logging
 from app.core.database import get_redis
 from typing import List
 import json
 import redis
-import logging
 from ddtrace import tracer
 
-# Configure logging with Datadog format
-FORMAT = ('%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] '
-          '[dd.service=%(dd.service)s dd.env=%(dd.env)s dd.version=%(dd.version)s dd.trace_id=%(dd.trace_id)s dd.span_id=%(dd.span_id)s] '
-          '- %(message)s')
-logging.basicConfig(format=FORMAT)
-logger = logging.getLogger(__name__)
-logger.level = logging.INFO
+# Setup logging
+logger = setup_logging()
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
