@@ -1,3 +1,6 @@
+# Cusror
+.cursor/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -132,3 +135,14 @@ celerybeat-schedule
 secrets.yaml
 *secret*.yaml
 *secret*.yml
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+vendor/

@@ -56,6 +56,8 @@ spec:
         protocols:
           grpc:
             enabled: true
+          http:
+            enabled: true
     remoteConfiguration:
       enabled: true
     sbom:
