@@ -5,7 +5,7 @@ namespace: otel-store
 
 resources:
   - services/frontend/deploy
-  - services/inventory-service/deploy
+  - services/inventory-service-java/deploy
 
 commonLabels:
   app.kubernetes.io/part-of: otel-store
@@ -41,5 +41,7 @@ patches:
 
     target:
       kind: Deployment
-      name: ".*"
+      name: frontend
       namespace: otel-store
+      version: v1
+      group: apps
