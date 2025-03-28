@@ -1,4 +1,3 @@
-import ddtrace
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -13,9 +12,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Templates
 templates = Jinja2Templates(directory="templates")
-
-# Configure Datadog tracer
-ddtrace.patch_all()
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):

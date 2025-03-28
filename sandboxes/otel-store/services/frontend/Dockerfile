@@ -11,13 +11,8 @@ COPY app/ ./app/
 COPY templates/ ./templates/
 COPY static/ ./static/
 
-# Set environment variables
-ENV DD_SERVICE=frontend
-ENV DD_ENV=development
-ENV DD_VERSION=1.0.0
-
 # Expose port
 EXPOSE 8000
 
-# Run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"] 
+# Run the application with ddtrace-run
+CMD ["ddtrace-run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"] 
