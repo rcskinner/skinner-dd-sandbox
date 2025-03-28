@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: otel-store
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        ad.datadoghq.com/frontend.logs: '[{"source": "python", "service": "frontend"}]'
+        ad.datadoghq.com/frontend.check_names: '["python"]'
+        ad.datadoghq.com/frontend.init_configs: '[{}]'
+        ad.datadoghq.com/frontend.instances: '[{"host": "%%host%%", "port": 8000}]'
+    spec:
+      containers:
+      - name: frontend
+        image: rcskin/otel-store-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: DD_AGENT_HOST
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: DD_TRACE_AGENT_PORT
+          value: "8126"
+        - name: DD_LOGS_INJECTION
+          value: "true"
+        - name: DD_TRACE_SAMPLE_RATE
+          value: "1"
+        - name: DD_ENV
+          value: "development"
+        - name: DD_SERVICE
+          value: "frontend"
+        - name: DD_VERSION
+          value: "1.0.0" 
