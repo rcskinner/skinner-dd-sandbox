@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+    <h1 class="text-2xl font-bold mb-6 text-center">Place an Order</h1>
+    
+    <form action="/order" method="POST" class="space-y-4">
+        <div>
+            <label for="product" class="block text-sm font-medium text-gray-700">Product</label>
+            <select name="product" id="product" required
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="">Select a product</option>
+                <option value="laptop">Laptop</option>
+                <option value="phone">Phone</option>
+                <option value="tablet">Tablet</option>
+                <option value="headphones">Headphones</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+            <input type="number" name="quantity" id="quantity" min="1" value="1" required
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+        </div>
+
+        <button type="submit"
+                class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+            Place Order
+        </button>
+    </form>
+</div>
+{% endblock %} 
