@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
-import httpx
+import requests
 
 # Initialize FastAPI app
 app = FastAPI(title="Order System Frontend")
@@ -31,12 +31,16 @@ async def create_order(request: Request):
     }
     
     # Call inventory service (OpenTelemetry)
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            "http://inventory-service.otel-store.svc.cluster.local:8080/inventory",
-            json=order_data
+    try:
+        response = requests.post(
+            "http://inventory-service.otel-store.svc.cluster.local/api/v1/inventory",
+            json=order_data,
+            verify=False,
+            timeout=3
         )
         inventory_result = response.json()
+    except Exception as e:
+        raise Exception(f"Error connecting to inventory service: {str(e)}")
     
     return templates.TemplateResponse(
         "order_result.html",
