@@ -35,6 +35,9 @@ spec:
       enabled: true
       instrumentation:
         enabled: true
+        enabledNamespaces:
+          - pyapp
+          - autoinstrumented-app
     cspm:
       enabled: true
     cws:
