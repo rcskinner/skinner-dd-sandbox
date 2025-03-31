@@ -5,7 +5,7 @@ metadata:
   namespace: datadog
 spec:
   global:
-    clusterName: lab  
+    clusterName: gke-demo-cluster
     credentials:  
       apiSecret:  
         secretName: datadog-secret
@@ -35,10 +35,6 @@ spec:
       enabled: true
       instrumentation:
         enabled: true
-        enabledNamespaces:
-          - pyapp
-        libVersions:
-          python: v2.10.4
     cspm:
       enabled: true
     cws:
@@ -54,6 +50,8 @@ spec:
       receiver:
         protocols:
           grpc:
+            enabled: true
+          http:
             enabled: true
     remoteConfiguration:
       enabled: true
@@ -73,10 +71,3 @@ spec:
       enabled: true
     prometheusScrape:
       enabled: true
-  override:
-    nodeAgent:
-      env:
-        - name: DD_HOSTNAME
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.nodeName 
