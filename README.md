@@ -1,19 +1,26 @@
 # Datadog Agent Sandbox
 
-This repository contains a sandbox environment for testing and experimenting with Datadog agents across different deployment scenarios. It includes configurations for both bare-metal and Kubernetes (GKE) environments, along with a sample FastAPI application for testing.
+This repository contains a sandbox environment for testing and experimenting with Datadog agents across different deployment scenarios. It includes configurations for both local development and Kubernetes (GKE) environments, along with infrastructure as code using Terraform.
 
 ## Project Structure
 
 ```
 .
-├── apps/
-│   └── fastapi_app/         # Sample FastAPI application for testing
-├── dd-agent/
-│   ├── bare-metal/         # Bare-metal Datadog agent configurations
+├── dd-agent/              # Datadog agent configurations and setup
 │   ├── gke/               # GKE-specific Datadog agent configurations
+│   ├── local-cluster/     # Local development cluster configurations
 │   └── setup.sh           # Setup script for Datadog agent deployment
-└── utils/
-    └── redis/             # Redis utility configurations
+├── terraform/             # Infrastructure as Code for GKE clusters
+└── sandboxes/             # Sample applications for testing Datadog monitoring
+    ├── otel-store/        # OpenTelemetry demo store application
+    │   ├── services/      # Microservices components
+    │   ├── collector/     # OpenTelemetry collector configuration
+    │   └── deploy/        # Kubernetes deployment manifests
+    └── fastapi-redis/     # FastAPI application with Redis integration
+        ├── app/           # FastAPI application code
+        ├── redis/         # Redis configuration
+        ├── loadtest/      # Load testing utilities
+        └── deploy/        # Kubernetes deployment manifests
 ```
 
 ## Prerequisites
@@ -21,9 +28,30 @@ This repository contains a sandbox environment for testing and experimenting wit
 - Kubernetes cluster (for GKE deployment)
 - Datadog account and API key
 - Docker (for local development)
-- Python 3.8+ (for FastAPI application)
+- Terraform (for infrastructure deployment)
+- Google Cloud Platform account and credentials (for GKE deployment)
 
 ## Setup
+
+### Infrastructure Setup
+
+1. Navigate to the `terraform` directory:
+   ```bash
+   cd terraform
+   ```
+
+2. Initialize Terraform:
+   ```bash
+   terraform init
+   ```
+
+3. Review and modify `terraform.tfvars` with your specific values.
+
+4. Apply the Terraform configuration:
+   ```bash
+   terraform plan
+   terraform apply
+   ```
 
 ### Datadog Agent Setup
 
@@ -38,40 +66,51 @@ This repository contains a sandbox environment for testing and experimenting wit
    ```
    This will prompt for your Datadog API key and set up the necessary Kubernetes secrets.
 
-### FastAPI Application
-
-1. Navigate to the FastAPI application directory:
-   ```bash
-   cd apps/fastapi_app
-   ```
-
-2. Create a virtual environment and install dependencies:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
-
-3. Run the application:
-   ```bash
-   uvicorn main:app --reload
-   ```
-
 ## Components
 
-### FastAPI Application
-A sample FastAPI application that can be used to test Datadog monitoring. It includes:
-- Basic API endpoints
-- Redis integration
-- Environment configuration using pydantic-settings
+### Infrastructure (Terraform)
+- GKE cluster configuration
+- Network and security settings
+- IAM roles and permissions
+- Datadog agent deployment configurations
 
 ### Datadog Agent Configurations
-- **Bare-metal**: Configuration for running Datadog agent directly on a host
 - **GKE**: Kubernetes-specific configurations for deploying Datadog agent in a GKE cluster
+- **Local Cluster**: Configuration for local development and testing
+
+### Sample Applications (Sandboxes)
+The repository includes two sample applications for testing Datadog monitoring:
+
+1. **OpenTelemetry Store Demo**
+   - A microservices-based e-commerce application
+   - Demonstrates OpenTelemetry integration with Datadog
+   - Includes multiple services with distributed tracing
+   - Uses OpenTelemetry Collector for telemetry data
+
+2. **FastAPI Redis Application**
+   - A FastAPI application with Redis integration
+   - Demonstrates application performance monitoring
+   - Includes load testing capabilities
+   - Shows Redis integration monitoring
+
+These sandbox applications provide real-world scenarios for testing and validating Datadog monitoring capabilities.
 
 ## Development
 
-The project is structured to support different deployment scenarios and testing environments. Each component can be developed and tested independently.
+The project supports multiple deployment scenarios:
+- Local development using Docker and Kubernetes
+- GKE-based production-like environment
+- Infrastructure as Code using Terraform
+
+Each component can be developed and tested independently. The Terraform configurations provide a consistent infrastructure setup across different environments.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
