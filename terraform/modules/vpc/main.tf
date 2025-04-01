@@ -54,7 +54,7 @@ resource "google_compute_firewall" "allow_gke_access" {
     ports    = ["443", "10250"]  # Kubernetes API and kubelet ports
   }
 
-  source_ranges = ["67.176.9.173/32"]  # Your IP
+  source_ranges = [var.allowed_ip]  # Your IP
   target_tags   = ["gke-${var.cluster_name}"]
 }
 
@@ -68,6 +68,6 @@ resource "google_compute_firewall" "allow_loadbalancer" {
     ports    = ["80", "443"]  # Add other ports as needed
   }
 
-  source_ranges = ["67.176.9.173/32"]  # Your IP
+  source_ranges = [var.allowed_ip]  # Your IP
   target_tags   = ["gke-${var.cluster_name}"]
 } 

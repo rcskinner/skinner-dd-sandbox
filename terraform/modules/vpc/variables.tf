@@ -23,4 +23,9 @@ variable "auto_create_subnetworks" {
 variable "cluster_name" {
   description = "Name of the GKE cluster"
   type        = string
+}
+
+variable "allowed_ip" {
+  description = "IP address to allow access from"
+  type        = string
 } 

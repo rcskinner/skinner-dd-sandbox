@@ -49,4 +49,9 @@ variable "node_count" {
   description = "Number of nodes in the GKE cluster"
   type        = number
   default     = 1
+}
+
+variable "allowed_ip" {
+  description = "IP address to allow access from"
+  type        = string
 } 

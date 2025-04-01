@@ -15,6 +15,7 @@ module "vpc" {
   subnet_cidr  = "10.0.0.0/24"
   region       = var.region
   cluster_name = var.cluster_name
+  allowed_ip   = var.allowed_ip
 }
 
 module "gke" {
