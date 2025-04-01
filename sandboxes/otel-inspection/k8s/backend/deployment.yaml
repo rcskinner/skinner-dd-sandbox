@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-inspection-backend
+  namespace: otel-inspection
+  labels:
+    app: otel-inspection-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-inspection-backend
+  template:
+    metadata:
+      labels:
+        app: otel-inspection-backend
+    spec:
+      tolerations:
+      - key: "kubernetes.io/arch"
+        operator: "Equal"
+        value: "arm64"
+        effect: "NoSchedule"
+      containers:
+      - name: otel-inspection-backend
+        image: rcskin/otel-inspection-backend:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20 
