@@ -11,6 +11,7 @@ from contextlib import asynccontextmanager
 import json
 import functools
 import time
+from fastapi.middleware.cors import CORSMiddleware
 
 class MemorySpanExporter(SpanExporter):
     def __init__(self):
@@ -102,6 +103,15 @@ trace.set_tracer_provider(tracer_provider)
 
 # Create FastAPI app
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with specific origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Instrument FastAPI with OpenTelemetry
 FastAPIInstrumentor.instrument_app(app)
