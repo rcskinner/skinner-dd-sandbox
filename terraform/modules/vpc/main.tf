@@ -56,4 +56,18 @@ resource "google_compute_firewall" "allow_gke_access" {
 
   source_ranges = ["67.176.9.173/32"]  # Your IP
   target_tags   = ["gke-${var.cluster_name}"]
+}
+
+# Allow incoming traffic to LoadBalancer services
+resource "google_compute_firewall" "allow_loadbalancer" {
+  name    = "${var.vpc_name}-allow-loadbalancer"
+  network = google_compute_network.vpc.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80", "443"]  # Add other ports as needed
+  }
+
+  source_ranges = ["67.176.9.173/32"]  # Your IP
+  target_tags   = ["gke-${var.cluster_name}"]
 } 
