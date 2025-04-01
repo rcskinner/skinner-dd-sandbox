@@ -6,6 +6,7 @@ echo
 
 # Update Helm
 helm repo add datadog https://helm.datadoghq.com
+kubectl create namespace datadog
 
 #required for introspection.enabled=true required for some reason
 helm install datadog-operator datadog/datadog-operator --set introspection.enabled=true -n datadog

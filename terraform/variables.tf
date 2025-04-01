@@ -9,6 +9,12 @@ variable "region" {
   default     = "us-central1"
 }
 
+variable "zone" {
+  description = "The GCP zone for zonal resources like GKE"
+  type        = string
+  default     = "us-central1-a"
+}
+
 variable "vpc_name" {
   description = "The name of the VPC"
   type        = string

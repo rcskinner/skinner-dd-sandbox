@@ -21,7 +21,7 @@ module "gke" {
   source = "./modules/gke"
 
   project_id   = var.project_id
-  location     = var.region
+  location     = var.zone
   cluster_name = var.cluster_name
   vpc_id       = module.vpc.vpc_id
   subnet_id    = module.vpc.subnet_id
@@ -33,12 +33,11 @@ module "gke" {
 }
 
 # Configure kubectl context after cluster creation
-#TODO: Fix this
 resource "null_resource" "configure_kubectl" {
   depends_on = [module.gke]
 
   provisioner "local-exec" {
-    command = "gcloud container clusters get-credentials ${module.gke.cluster_name} --region ${var.region}"
+    command = "gcloud container clusters get-credentials ${module.gke.cluster_name} --zone ${var.zone}"
   }
 }
 
