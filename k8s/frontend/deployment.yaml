@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-inspection-frontend
+  namespace: otel-inspection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-inspection-frontend
+  template:
+    metadata:
+      labels:
+        app: otel-inspection-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: rcskin/otel-inspection-frontend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: REACT_APP_API_URL
+          value: "http://otel-inspection-backend"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi" 

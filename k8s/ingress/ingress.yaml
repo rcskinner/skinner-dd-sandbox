@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: otel-inspection-ingress
+  namespace: otel-inspection
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "otel-inspection-ip"
+    kubernetes.io/ingress.allow-http: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: otel-inspection-backend
+            port:
+              number: 80
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: otel-inspection-frontend
+            port:
+              number: 80 
