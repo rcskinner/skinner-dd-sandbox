@@ -10,6 +10,7 @@ from typing import List, Dict, Any, Callable, Awaitable
 from contextlib import asynccontextmanager
 import json
 import functools
+import time
 
 class MemorySpanExporter(SpanExporter):
     def __init__(self):
@@ -139,7 +140,34 @@ async def custom_exception_handler(request: Request, exc: Exception):
 async def root():
     with trace.get_tracer(__name__).start_as_current_span("root_operation") as span:
         span.set_attribute("endpoint", "/")
-        return {"message": "Hello World"}
+        
+        # Simulate some database operation
+        with trace.get_tracer(__name__).start_as_current_span("database_operation") as db_span:
+            db_span.set_attribute("operation", "fetch_user_data")
+            # Simulate some work
+            time.sleep(0.1)
+        
+        # Simulate some external API call
+        with trace.get_tracer(__name__).start_as_current_span("external_api_call") as api_span:
+            api_span.set_attribute("operation", "fetch_weather_data")
+            api_span.set_attribute("endpoint", "https://api.weather.com")
+            # Simulate some work
+            time.sleep(0.2)
+            
+            # Add an event to the API span
+            api_span.add_event("api_response_received", attributes={
+                "status_code": 200,
+                "response_time": 200
+            })
+        
+        return {
+            "message": "Hello World",
+            "spans": [
+                {"name": "root_operation", "type": "main"},
+                {"name": "database_operation", "type": "database"},
+                {"name": "external_api_call", "type": "api"}
+            ]
+        }
 
 @app.get("/error")
 @with_request_spans
