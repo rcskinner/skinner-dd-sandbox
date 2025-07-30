@@ -11,6 +11,7 @@ from contextlib import asynccontextmanager
 import json
 import functools
 import time
+from fastapi.middleware.cors import CORSMiddleware
 
 class MemorySpanExporter(SpanExporter):
     def __init__(self):
@@ -80,14 +81,40 @@ def with_request_spans(func: Callable[..., Awaitable[Any]]) -> Callable[..., Awa
     @functools.wraps(func)
     async def wrapper(*args, **kwargs):
         async with request_spans() as memory_exporter:
-            # Execute the endpoint function
-            response = await func(*args, **kwargs)
-            
-            # If the response is a dict, add the spans to it
-            if isinstance(response, dict):
-                response["spans"] = memory_exporter.spans
-            
-            return response
+            try:
+                # Execute the endpoint function
+                response = await func(*args, **kwargs)
+                
+                # If the response is a dict, add the spans to it
+                if isinstance(response, dict):
+                    response["spans"] = memory_exporter.spans
+                
+                return response
+            except Exception as exc:
+                # Get trace context
+                trace_context = get_current_span_context()
+                
+                # Get the current span and add error information
+                current_span = trace.get_current_span()
+                current_span.set_status(Status(StatusCode.ERROR, str(exc)))
+                current_span.record_exception(exc, attributes={
+                    "exception.type": type(exc).__name__,
+                    "exception.message": str(exc),
+                    "exception.escaped": "False"
+                })
+                
+                # Force flush to ensure all spans are captured
+                memory_exporter.force_flush()
+                
+                return JSONResponse(
+                    status_code=500,
+                    content={
+                        "error": str(exc),
+                        "trace_context": trace_context,
+                        "type": type(exc).__name__,
+                        "spans": memory_exporter.spans
+                    }
+                )
     
     return wrapper
 
@@ -103,6 +130,15 @@ trace.set_tracer_provider(tracer_provider)
 # Create FastAPI app
 app = FastAPI()
 
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with specific origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Instrument FastAPI with OpenTelemetry
 FastAPIInstrumentor.instrument_app(app)
 
@@ -117,8 +153,8 @@ def get_current_span_context():
 
 @app.exception_handler(Exception)
 async def custom_exception_handler(request: Request, exc: Exception):
+    # This will now only handle exceptions that weren't caught by with_request_spans
     trace_context = get_current_span_context()
-    # Get the current span and add error information
     current_span = trace.get_current_span()
     current_span.set_status(Status(StatusCode.ERROR, str(exc)))
     current_span.record_exception(exc, attributes={
@@ -126,6 +162,7 @@ async def custom_exception_handler(request: Request, exc: Exception):
         "exception.message": str(exc),
         "exception.escaped": "False"
     })
+    
     return JSONResponse(
         status_code=500,
         content={

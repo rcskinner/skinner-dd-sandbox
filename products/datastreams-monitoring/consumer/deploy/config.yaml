@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: kafka
+  name: consumer-config
+data:
+  KAFKA_BROKER: "kafka:9092"
+  KAFKA_TOPIC: "test-topic"
+  KAFKA_CONSUMER_GROUP: "test-group"
