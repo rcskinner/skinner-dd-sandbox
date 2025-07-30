@@ -28,7 +28,7 @@ spec:
             fieldRef:
               fieldPath: status.hostIP
         - name: OTEL_RESOURCE_ATTRIBUTES
-          value: "service.name=inventory-service,host.name=test-host"
+          value: "service.name=inventory-service,host.name=orbstack"
         - name: NODE_NAME
           valueFrom:
             fieldRef:
